@@ -74,7 +74,10 @@ by `where(is.double)`.
 For each *variable of interest*, `cors` has a dataframe with information
 on the domain (`gtoe` to `lt`) for each segment of observations, the
 number of observations (`n_obs`) in the segment, and the associated
-correlation (`cor`) of the variable against `.target`.
+correlation (`cor`) of the variable with `.target`.
+
+(Dataframes with one row represent smoothers with no local minima /
+maxima.)
 
 ``` r
 mods_cors$cors
@@ -127,35 +130,11 @@ correlation calculation[3]. In our example, these may be accessed with
 By default `mgcv::gam()` (via a parsnip interface) is the engine for the
 smoother. At present, it is also the only model type that will work[4].
 
-## Weighted correlation
+## Plots of splits
 
-The output from `piecewise_cors()` can be passed to the helper
-`weighted_abs_mean_cors()` to calculate an overall weighted correlation
-for each *variable of interest*.
-
-``` r
-weighted_abs_mean_cors(mods_cors)
-#> # A tibble: 5 x 2
-#>   name  value
-#>   <chr> <dbl>
-#> 1 mpg   0.895
-#> 2 disp  0.851
-#> 3 drat  0.520
-#> 4 wt    0.775
-#> 5 qsec  0.700
-```
-
-By default a Fisher z-transformation is applied to the individual
-correlations when calculating the weighted correlation.
-
-See `?weighted_abs_mean_cors` for more information.
-
-## Plots of Splits
-
-To review the piecewise split points, the outputs from
-`piecewise_cors()` can be passed into `plot_splits()`. *Variables of
-interest* that you wish to plot must be typed *or* specified by tidy
-selection
+To review the split points, the outputs from `piecewise_cors()` can be
+passed into `plot_splits()`. *Variables of interest* that you wish to
+plot must be typed or specified by tidy a tidy selector.
 
 ``` r
 mods_cors %>% 
@@ -164,15 +143,48 @@ mods_cors %>%
 #> $mpg
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
     #> 
     #> $qsec
 
-<img src="man/figures/README-unnamed-chunk-6-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-2.png" width="100%" />
 
 To view plots for all *variables of interest*, replace `mpg, qsec` with
 `everything()`.
+
+## Weighted correlation
+
+The output from `piecewise_cors()` can be passed to the helper
+`weighted_abs_mean_cors()` to calculate an overall weighted correlation
+for each *variable of interest*.
+
+``` r
+weighted_cors <- weighted_abs_mean_cors(mods_cors)
+
+weighted_cors
+#> # A tibble: 5 x 2
+#>   name  value
+#>   <chr> <dbl>
+#> 1 mpg   0.895
+#> 2 disp  0.851
+#> 3 drat  0.520
+#> 4 wt    0.775
+#> 5 qsec  0.700
+
+weighted_cors %>% 
+  mutate(name = forcats::fct_reorder(name, value)) %>% 
+  ggplot(aes(x = name, y = value))+
+  geom_col()+
+  coord_flip()+
+  labs(title = "Weighted correlation with 'hp'")
+```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+
+By default a Fisher z-transformation is applied to the individual
+correlations when calculating the weighted correlation. See
+`?weighted_abs_mean_cors` for more information.
 
 # Customizing
 
@@ -207,7 +219,7 @@ mods_cors_custom %>%
 <img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
 
 Equivalently, this may be specified by passing the parameter into the
-`fit_formula`:
+`fit_formula` argument:
 
 ``` r
 # Chunk not evaluated
@@ -218,6 +230,10 @@ piecewise_cors(
   fit_formula = ".target ~ s(..., sp = 2)"
 )
 ```
+
+See [Generalized additive models via
+mgcv](https://parsnip.tidymodels.org/reference/details_gen_additive_mod_mgcv.html)
+and associated reference pages for more details on parsnip interface.
 
 ## `cor_function`
 

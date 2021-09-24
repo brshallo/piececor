@@ -21,8 +21,11 @@ the graph or not. If you have lots of observations, you may want to set to
 }
 \value{
 Plots of smoothing functions and splits between segments of
-observations (vertical lines) on observations for each variable specified
-in \code{...} (on x axis, \code{.target} variable will be on y).
+observations on observations for each variable specified in \code{...} (on x
+axis, \code{.target} variable will be on y). Red line is smoothed fit Blue lines
+are minima / maxima of smoothed fit / breakpoints in segments. Grey points
+are observations (assuming \code{show_points = TRUE}). Labels are cor values for
+each segment.
 }
 \description{
 Plot data with cut points for segments and smoothed model overlaid on

@@ -24,6 +24,17 @@ plot_splits_setup <- function(cors_mods, show_points){
                         color = "blue",
                         alpha = 0.5)
 
+  cors_label_data <-
+    bind_cols(cors_dataframe,
+              summarise(data, across(matches(names(data)[[1]]), max))
+    )
+
+  p <- p +
+    geom_label(aes(x = lt, label = round(cor, 2) %>% format(digits = 2)),
+               alpha = 0.5,
+               hjust = "right",
+               data = cors_label_data)
+
   if(nrow(cors_dataframe) == 1){
     message(col_names[[2]], ": No splits, i.e. no local extrema in smoothed fit.")
   }
@@ -48,8 +59,11 @@ plot_splits_setup <- function(cors_mods, show_points){
 #'   `FALSE`.
 #'
 #' @return Plots of smoothing functions and splits between segments of
-#'   observations (vertical lines) on observations for each variable specified
-#'   in `...` (on x axis, `.target` variable will be on y).
+#'   observations on observations for each variable specified in `...` (on x
+#'   axis, `.target` variable will be on y). Red line is smoothed fit Blue lines
+#'   are minima / maxima of smoothed fit / breakpoints in segments. Grey points
+#'   are observations (assuming `show_points = TRUE`). Labels are cor values for
+#'   each segment.
 #'
 #' @export
 #'
