@@ -28,7 +28,7 @@ interest*}:
     interest}* for each segment
 3.  Allows for calculating a weighted correlation coefficient across
     segments
-4.  Repeat for all {*variables of interest*} against {*target*}
+4.  Repeat for all {*variables of interest*} with {*target*}
 
 # Example
 
@@ -127,7 +127,7 @@ correlation calculation[3]. In our example, these may be accessed with
 `mods_cors$mods`.
 
 By default `mgcv::gam()` (via a parsnip interface) is the engine for the
-smoother. At present, it is the only model type that will work[4].
+smoother. At present, it is also the only model type that will work[4].
 
 ## Plots of splits
 
@@ -155,8 +155,8 @@ To view plots for all *variables of interest*, replace `mpg, qsec` with
 ## Weighted correlation
 
 The output from `piecewise_cors()` can be passed to the helper
-`weighted_abs_mean_cors()` to calculate an overall weighted correlation
-between 0 and 1 for each *variable of interest*.
+`weighted_abs_mean_cors()` to calculate an overall weighted
+“correlation” between 0 and 1 for each *variable of interest*.
 
 ``` r
 weighted_cors <- weighted_abs_mean_cors(mods_cors)
@@ -258,10 +258,11 @@ piecewise_cors(
 #> 5 qsec  0.718
 ```
 
-We aren’t prevented from passing in character strings of other lambda
-functions to `cor_function` to calculate metrics other than
-correlations[6]. For example, say we want to see the p.value’s of
-correlations at each segment for `hp ~ qsec`.
+You aren’t prevented from passing into `cor_function` character strings
+of lambda functions to calculate metrics other than correlations[6].
+
+For example, say we want to see the p.value’s of correlations at each
+segment for `hp ~ qsec`:
 
 ``` r
 # Warnings silenced in chunk output

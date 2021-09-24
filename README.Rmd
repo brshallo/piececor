@@ -30,7 +30,7 @@ The core function is `piecewise_cors()` which, for each {*variable of interest*}
 1. Splits observations into segments based on the local minima / maxima of a smoother fit on *{target} ~ {variable of interest}*.
 1. Calculates the correlation between *{target} & {variable of interest}* for each segment
 1. Allows for calculating a weighted correlation coefficient across segments
-1. Repeat for all {*variables of interest*} against {*target*}
+1. Repeat for all {*variables of interest*} with {*target*}
 
 # Example
 
@@ -79,7 +79,7 @@ By default `piecewise_cors()` uses Spearman's Rank Correlation Coefficient^[So i
 
 For each *variable of interest*, `mods` contains a [parsnip](https://github.com/tidymodels/parsnip) fit object (the smoothing model). The local minima / maxima of these fitted models determines the breakpoints for segmenting observations for each correlation calculation^[`mods` is primarily saved simply for use with `piececor::plot_splits()`.]. In our example, these may be accessed with `mods_cors$mods`.
 
-By default `mgcv::gam()` (via a parsnip interface) is the engine for the smoother. At present, it is the only model type that will work^[In theory, with some changes, other model types with parsnip interfaces could be added with minimal effort].
+By default `mgcv::gam()` (via a parsnip interface) is the engine for the smoother. At present, it is also the only model type that will work^[In theory, with some changes, other model types with parsnip interfaces could be added with minimal effort].
 
 ## Plots of splits
 
@@ -94,7 +94,7 @@ To view plots for all *variables of interest*, replace `mpg, qsec` with `everyth
 
 ## Weighted correlation
 
-The output from `piecewise_cors()` can be passed to the helper `weighted_abs_mean_cors()` to calculate an overall weighted correlation between 0 and 1 for each *variable of interest*.
+The output from `piecewise_cors()` can be passed to the helper `weighted_abs_mean_cors()` to calculate an overall weighted "correlation" between 0 and 1 for each *variable of interest*.
 
 ```{r}
 weighted_cors <- weighted_abs_mean_cors(mods_cors)
@@ -161,7 +161,9 @@ piecewise_cors(
   weighted_abs_mean_cors()
 ```
 
-We aren't prevented from passing in character strings of other lambda functions to `cor_function` to calculate metrics other than correlations^[Provided the lambda function evaluates to a numeric vector of length 1]. For example, say we want to see the p.value's of correlations at each segment for `hp ~ qsec`.
+You aren't prevented from passing into `cor_function` character strings of lambda functions to calculate metrics other than correlations^[Provided the lambda function evaluates to a numeric vector of length 1]. 
+
+For example, say we want to see the p.value's of correlations at each segment for `hp ~ qsec`:
 
 ```{r, warning=FALSE}
 # Warnings silenced in chunk output
