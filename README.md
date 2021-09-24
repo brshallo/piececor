@@ -4,16 +4,19 @@
 # piececor
 
 <!-- badges: start -->
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 piececor is a toy package for calculating univariate piecewise
-correlations of a set of *{variables of interest}* against a *{target}*
+correlations of a set of {*variables of interest*} against a {*target*}
 variable. A more mature version of this package may be useful for
 exploratory data analysis or in “simple filtering” of features for
 predictive modeling.
 
-This package is a rough mock-up of initial thoughts on the subject
-between Bryan Shalloway, Dr. Shaina Race, and Ricky Tharrington.
+This package is a *rough* mock-up of initial ideas discussed between
+Bryan Shalloway, Dr. Shaina Race, and Ricky Tharrington.
 
 # Steps
 
@@ -21,17 +24,17 @@ The core function is `piecewise_cors()` which, for each {*variable of
 interest*}:
 
 1.  Splits observations into segments based on the local minima / maxima
-    of a smoother, fit on the relationship of *{target} \~ {variable of
-    interest}*.
+    of a smoother, fit on *{target} \~ {variable of interest}*.
 2.  Calculates the correlation between *{target} & {variable of
     interest}* for each segment
 3.  Allows for calculating a weighted correlation coefficient across
     segments
-4.  Repeat for all *{variables of interest}* against *{target}*
+4.  Repeat for all {*variables of interest*} against {*target*}
 
 # Example
 
-Use `mtcars` data, converting some numeric columns to factors.
+Use a version of `mtcars` data with some numeric columns converted to
+factors.
 
 ``` r
 library(tidyverse)
@@ -66,12 +69,12 @@ by `where(is.double)`.
 
 `piecewise_cors()` returns a named list of `mods` and `cors`.
 
-**correlations:**
+**Correlations:**
 
-For each *variable of interest*, `cors` has a dataframes with
-information on the domain (`gtoe` to `lt`) for each segment of
-observations, the number of observations (`n_obs`) in the segment, and
-the associated correlation (`cor`) of the variable against `.target`.
+For each *variable of interest*, `cors` has a dataframe with information
+on the domain (`gtoe` to `lt`) for each segment of observations, the
+number of observations (`n_obs`) in the segment, and the associated
+correlation (`cor`) of the variable against `.target`.
 
 ``` r
 mods_cors$cors
@@ -115,20 +118,20 @@ Coefficient to calculate correlations[2].
 **Smoothing models:**
 
 For each *variable of interest*, `mods` contains a
-[parsnip](https://github.com/tidymodels/parsnip) fit object from a
-smoothing model. The local minima / maxima of this fit provide the
-breakpoints for segmenting observations for each *variable of interest*
-correlation
-calculation^\[`mods is primarily saved simply for use with`piececor::plot\_splits()`.]. In our example, these may be accessed with`mods\_cors$mods\`.
+[parsnip](https://github.com/tidymodels/parsnip) fit object (the
+smoothing model). The local minima / maxima of these fitted models
+determines the breakpoints for segmenting observations for each
+correlation calculation[3]. In our example, these may be accessed with
+`mods_cors$mods`.
 
-By default `mgcv::gam()` (via a parsnip interface) is used as the engine
-for the smoother. At present, it is also the only model type that will
-work.
+By default `mgcv::gam()` (via a parsnip interface) is the engine for the
+smoother. At present, it is also the only model type that will work[4].
 
 ## Weighted correlation
 
 The output from `piecewise_cors()` can be passed to the helper
-`weighted_abs_mean_cors()` to calculate an overall weighted correlation.
+`weighted_abs_mean_cors()` to calculate an overall weighted correlation
+for each *variable of interest*.
 
 ``` r
 weighted_abs_mean_cors(mods_cors)
@@ -151,31 +154,25 @@ See `?weighted_abs_mean_cors` for more information.
 
 To review the piecewise split points, the outputs from
 `piecewise_cors()` can be passed into `plot_splits()`. *Variables of
-interest* that you wish to plot must be typed or specified by a tidy
-selector.
+interest* that you wish to plot must be typed *or* specified by tidy
+selection
 
 ``` r
 mods_cors %>% 
-  plot_splits(mpg, wt, qsec)
+  plot_splits(mpg, qsec)
 #> mpg: No splits, i.e. no local extrema in smoothed fit.
-#> wt: No splits, i.e. no local extrema in smoothed fit.
 #> $mpg
 ```
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
     #> 
-    #> $wt
+    #> $qsec
 
 <img src="man/figures/README-unnamed-chunk-6-2.png" width="100%" />
 
-    #> 
-    #> $qsec
-
-<img src="man/figures/README-unnamed-chunk-6-3.png" width="100%" />
-
-To view plots for all *variables of interest*, replace `mpg, wt, qsec`
-with the tidy selector `everything()`.
+To view plots for all *variables of interest*, replace `mpg, qsec` with
+`everything()`.
 
 # Customizing
 
@@ -184,11 +181,11 @@ the smoother. `cor_function` allows for changes in the metric calculated
 on the segments. See `?piecewise_cors` for more detail on these
 arguments.
 
-## `custom_model_spec` &/\| `fit_formula`
+## `custom_model_spec`, `fit_formula`
 
-`custom_model_spec` can take in a parsnip model specifications[3]. For
-example, fixing `sp` (smoothing parameter) to `sp = 2` makes for a
-smoother fit for `mpg ~ qsec`:
+`custom_model_spec` can take in a parsnip model specifications[5]. For
+example, setting `sp` (smoothing parameter) to `sp = 2` makes for a
+smoother fit for `hp ~ qsec`:
 
 ``` r
 mod_spec <- parsnip::gen_additive_mod() %>%
@@ -225,8 +222,8 @@ piecewise_cors(
 ## `cor_function`
 
 Say you want to measure Pearson’s rather than Spearman’s correlation
-coefficient, you could use the `cor_function` argument to change the
-lambda function:
+coefficient across observation segments, you could use the
+`cor_function` argument to change the lambda function:
 
 ``` r
 piecewise_cors(
@@ -246,11 +243,10 @@ piecewise_cors(
 #> 5 qsec  0.718
 ```
 
-We aren’t prevented from passing in other lambda functions to
-`cor_function` that calculate things other than correlations (provided
-the lambda function evaluates to a numeric vector of length 1). For
-example, say we want to see the p.value’s of correlations at each
-segment for a *variable of interest*.
+We aren’t prevented from passing in character strings of other lambda
+functions to `cor_function` that calculate metrics other than
+correlations[6]. For example, say we want to see the p.value’s of
+correlations at each segment for a {*variable of interest*}.
 
 ``` r
 # Warnings silenced in chunk output
@@ -273,6 +269,10 @@ mods_cors_pvalues$cors$qsec
 #> 4   19.4 Inf   <tibble [7 x 2]>      7 1
 ```
 
+The `cor` column here actually represents the statistical test (run
+separately on each segment) of the null hypothesis that the spearman
+correlation is 0.
+
 # Installation
 
 Install from github with:
@@ -284,55 +284,56 @@ devtools::install_github("brshallo/piececor")
 # Limitations & Notes
 
 -   Very slow compared to other common “simple filtering” methods for
-    predicitve modeling[4].
+    predicitve modeling[7].
 -   Trying on a few different datasets, it often does not pass the “eye
     test”.
-    -   Splits often come near flatter parts of the data
-    -   or at the tails of the distribution where there are fewer points
+    -   Splits often come near flatter parts of the data or at the tails
+        of the distribution where there are fewer points
 -   Output of `weighted_abs_mean_cors()` is not particularly meaningful
     in a traditional notion of “correlation.”
-    -   Splits are determined based on optimizing a fit to *target* –
-        correlation metrics typically aren’t determined by a *target*.
-        Flipping *target \~ variable of interest* to *variable of
-        interest \~ target* produces different results. A smoother that
-        was fit based on total least squares or minimizing orthogonal
-        distance or some other approach may be more appropriate.
+    -   Splits are determined based on optimizing a fit to a {*target*}
+        – therefore flipping *{target} \~ {variable of interest}* to
+        *{variable of interest} \~ {target}* produces different weighted
+        correlation scores[8]. A smoother that was fit based on total
+        least squares or minimizing orthogonal distance or some other
+        approach may be more appropriate.
     -   How to do weighted correlation metrics also generally should be
         given a bit more thought.
 -   Other resources on “simple filtering” techniques (e.g. from [Feature
     Engineering and
     Selection…](http://www.feat.engineering/greedy-simple-filters.html))
-    recommend converting scores for feature importance to some
+    recommend converting scores of feature importance to some
     standardized metric, e.g. a p-value. It would take more
-    consideration for how to do this for piecewise correlations.
--   There is extensive literature on identifying *knots* for various
-    modeling strategies. The experiment with this package is to take
-    advantage of existing software that uses knots or other smoothing
-    techniques and then instead to consider the local minima / maxima
-    created by those techniques to inform cut-points. The defaults of
-    “mgcv” hopes to prevent overfitting and the use of “Spearman’s”
-    correlation focuses on whether the relationship is monotonic.
-    -   However we haven’t done our due diligence on relevant literature
+    consideration for how one could do this type of calculation for
+    piecewise correlations.
+-   There is extensive literature in predictive modeling on identifying
+    *knots*. The experiment with this package is to take advantage of
+    existing software that uses knots or other smoothing techniques and
+    then instead to consider the local minima / maxima created by those
+    techniques to inform cut-points. The defaults of “mgcv” hopes to
+    prevent overfitting and the use of “Spearman’s” correlation means
+    we’re checking whether the relationship is monotonic.
+    -   However we haven’t done a ton of research on relevant literature
         concerning knots and other methods for determining cut-points.
     -   Right now the cut-points are essentially determined by looking
         where in the smoothed fits the first derivitive == 0. We may
         want to consider critical points or other methods. We may also
-        want to have some level of tolerance so that minor bumps don’t
+        want to have some level of tolerance or requisite change in
+        slope or observations in segment, etc. so that minor bumps don’t
         create multiple segments.
 -   `custom_model_spec` allows a parsnip model specification, with the
     idea that this would facilitate the input of any kind of smoother
     supported by parsnip (e.g. MARS, polynomial regression, …). However
     actually implementing this would require the removal of the
-    dependency on {gratia} as well as multiple other changes to
-    piececor.
--   A (probably) unnecessary number of objects are outputted by
-    `piecewise_cor()`.
+    dependency on [gratia](https://gavinsimpson.github.io/gratia/) as
+    well as multiple other changes to piececor.
+-   More thought should go into the structure of the output of
+    `piecewise_cor()`
 -   (Almost) no checks, tests, catches, etc. have been set-up
--   column names of dataframes in $cors should be better thought out
 
 # Resources
 
-Links are copied from slack discussions[5] and may be only tangentially
+Links are copied from slack discussions[9] and may be only tangentially
 related to piececor package.
 
 -   “Variable Importance Analysis: A Comprehensive review”
@@ -370,7 +371,13 @@ related to piececor package.
 
 [2] So is measuring the extent to which the relationship is monotonic.
 
-[3] Again only generative additive models via the “mgcv” engine may be
+[3] `mods` is primarily saved simply for use with
+`piececor::plot_splits()`.
+
+[4] In theory, with some changes, other model types with parsnip
+interfaces could be added with minimal effort
+
+[5] Again only generative additive models via the “mgcv” engine may be
 specified. This is in large part due to a dependency on the deprecated
 `fderiv()` function in [gratia](https://gavinsimpson.github.io/gratia/).
 Though changes would also need to be made to the `fit_formula` argument
@@ -379,7 +386,13 @@ continuous models would be possible candidates, e.g. loess or
 multi-adaptive regression splines (which also already has a parsnip
 interface).
 
-[4] Given that for each *variable of interest* an `mgcv` univariate
+[6] Provided the lambda function evaluates to a numeric vector of length
+1
+
+[7] Given that for each *variable of interest* an `mgcv` univariate
 model is fit – along with various other steps.
 
-[5] And not properly cited
+[8] Correlation measures usually don’t have some notion of a target, so
+the measures would be the same.
+
+[9] And not properly cited
