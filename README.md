@@ -315,6 +315,13 @@ devtools::install_github("brshallo/piececor")
         approach may be more appropriate.
     -   How to do weighted correlation metrics also generally should be
         given a bit more thought.
+    -   Note that the similar package
+        [nlcor](https://github.com/ProcessMiner/nlcor) just takes the
+        mean of the absolute value of the correlations to get an
+        adjusted total correlation and they do
+        $1 - \\prod\_{n = 1}^{i}(1 - p\_n)$ to get adjusted p values of
+        the correlations. See `nlcor:::NetCor()`
+        [here](https://github.com/ProcessMiner/nlcor/blob/master/R/correlations.R).
 -   Other resources on “simple filtering” techniques (e.g. from [Feature
     Engineering and
     Selection…](http://www.feat.engineering/greedy-simple-filters.html))
