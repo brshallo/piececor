@@ -1,0 +1,26 @@
+Package: piececor
+Type: Package
+Title: Tidy Piecewise Correlations
+Version: 0.0.0.9000
+Authors@R: 
+  person(given = "Bryan",
+         family = "Shalloway",
+         role = c("aut", "cre"),
+         email = "brshallodev@gmail.com")
+Description: Calculate piecewise correlations of variables of interest against a target. Use extrema from an arbitrary smoother to determine segments of observations.
+License: MIT + file LICENSE
+Imports: 
+    dplyr (>= 0.8.3),
+    ggplot2,
+    purrr,
+    tidyr,
+    stringr,
+    tibble,
+    parsnip,
+    mgcv,
+    gratia,
+    lifecycle
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
