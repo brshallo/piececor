@@ -9,11 +9,10 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-piececor is a toy package for calculating univariate piecewise
-correlations of a set of {*variables of interest*} against a {*target*}
-variable. A more mature version of this package may be useful for
-exploratory data analysis or in “simple filtering” of features for
-predictive modeling.
+piececor is a toy package for calculating piecewise correlations of a
+set of {*variables of interest*} with a {*target*} variable. This may be
+useful for exploratory data analysis or in “simple filtering” of
+features for predictive modeling.
 
 This package is a *rough* mock-up of initial ideas discussed between
 Bryan Shalloway, Dr. Shaina Race, and Ricky Tharrington.
@@ -174,9 +173,9 @@ weighted_cors
 
 weighted_cors %>% 
   mutate(name = forcats::fct_reorder(name, value)) %>% 
-  ggplot(aes(x = name, y = value))+
+  ggplot(aes(y = name, x = value))+
   geom_col()+
-  coord_flip()+
+  xlim(c(0, 1))+
   labs(title = "Weighted correlation with 'hp'")
 ```
 
