@@ -1,6 +1,9 @@
 ---
+title: "piececor"
 output: 
   github_document:
+    includes:
+      in_header: https://img.shields.io/badge/lifecycle-experimental-orange.svg
     toc: true
 ---
 
@@ -15,10 +18,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# piececor
-
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 piececor is a toy package for calculating piecewise correlations of a set of {*variables of interest*} with a {*target*} variable. This may be useful for exploratory data analysis or in "simple filtering" of features for predictive modeling.
@@ -52,7 +52,7 @@ mtcars_neat <- mtcars %>%
   mutate(across(where(is.numeric), min_unique_to_fact))
 ```
 
-## Calculate Correlations
+## Correlations of segments
 
 Specify `data`, `.target`, and `...`^[*variables of interest* are represented by `...` in the function.]
 
@@ -112,6 +112,8 @@ weighted_cors %>%
 ```
 
 By default a Fisher z-transformation is applied to the individual correlations when calculating the weighted correlation. See `?weighted_abs_mean_cors` for more information.
+
+See the end of section [Correlation metric] for an example calculating a p-value on piecewise correlations.
 
 # Customizing
 
@@ -229,10 +231,10 @@ forests for high-dimensional data" https://core.ac.uk/download/pdf/216462194.pdf
 * Getting derivitives from GAM's
     * https://gavinsimpson.github.io/gratia/reference/fderiv.html 
     * https://stackoverflow.com/questions/14207250/determining-derivatives-from-gam-smooth-object 
-* `ProcessMiner/nlcor` package (non-linear correlation): https://github.com/ProcessMiner/nlcor
+* [ProcessMiner/nlcor](https://github.com/ProcessMiner/nlcor) package (non-linear correlation): https://github.com/ProcessMiner/nlcor
     * nlcor uses Pearson correlation whereas piececor defaults to use Spearman, with the option of overriding this with `cor_function` argument
     * nlcor uses adaptive local linear correlation computations to determine cut-points whereas piececor uses the local maxima / minima of a smoother. 
-    * The similar package [nlcor](https://github.com/ProcessMiner/nlcor) just takes the mean (of the absolute values of the correlations) to get an *adjusted total correlation* and does $1 - \prod_{n = 1}^{i}(1 - p_n)$ (i.e. `1 - prod(1 - p)`) (throwing out non-significant p-values first) to get an *adjusted total p value*. See `nlcor:::NetCor()` [here](https://github.com/ProcessMiner/nlcor/blob/master/R/correlations.R). For the piececor examples I used Fisher's transformation and the Z-score method respectively to improve the appropriateness of these statistics.
+    * nlcor does not apply any transformations when calculating 'total adjusted' correlations and associated p-values^[See [github comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054).]. 
 * Covariant Derivatives https://en.wikipedia.org/wiki/Covariant_derivative
 * "Efficient test for nonlinear dependence of two continuous variables" https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-015-0697-7
 * 11.2 Simple Filters, from Feature Engineering and Selection... http://www.feat.engineering/greedy-simple-filters.html

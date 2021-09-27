@@ -1,8 +1,11 @@
+piececor
+================
 
--   [piececor](#piececor)
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="138" height="20" role="img" aria-label="lifecycle: experimental"><title>lifecycle: experimental</title><linearGradient id="s" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient><clipPath id="r"><rect width="138" height="20" rx="3" fill="#fff"/></clipPath><g clip-path="url(#r)"><rect width="55" height="20" fill="#555"/><rect x="55" width="83" height="20" fill="#fe7d37"/><rect width="138" height="20" fill="url(#s)"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110"><text aria-hidden="true" x="285" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="450">lifecycle</text><text x="285" y="140" transform="scale(.1)" fill="#fff" textLength="450">lifecycle</text><text aria-hidden="true" x="955" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="730">experimental</text><text x="955" y="140" transform="scale(.1)" fill="#fff" textLength="730">experimental</text></g></svg>
+
 -   [Steps](#steps)
 -   [Example](#example)
-    -   [Calculate Correlations](#calculate-correlations)
+    -   [Correlations of segments](#correlations-of-segments)
     -   [Plots of splits](#plots-of-splits)
     -   [Weighted correlation](#weighted-correlation)
 -   [Customizing](#customizing)
@@ -13,13 +16,7 @@
 -   [Resources](#resources)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-# piececor
-
 <!-- badges: start -->
-
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 piececor is a toy package for calculating piecewise correlations of a
@@ -63,7 +60,7 @@ mtcars_neat <- mtcars %>%
   mutate(across(where(is.numeric), min_unique_to_fact))
 ```
 
-## Calculate Correlations
+## Correlations of segments
 
 Specify `data`, `.target`, and `...`[1]
 
@@ -197,6 +194,9 @@ weighted_cors %>%
 By default a Fisher z-transformation is applied to the individual
 correlations when calculating the weighted correlation. See
 `?weighted_abs_mean_cors` for more information.
+
+See the end of section [Correlation metric](#correlation-metric) for an
+example calculating a p-value on piecewise correlations.
 
 # Customizing
 
@@ -391,25 +391,16 @@ related to piececor package.
 -   Getting derivitives from GAM’s
     -   <https://gavinsimpson.github.io/gratia/reference/fderiv.html>
     -   <https://stackoverflow.com/questions/14207250/determining-derivatives-from-gam-smooth-object>
--   `ProcessMiner/nlcor` package (non-linear correlation):
-    <https://github.com/ProcessMiner/nlcor>
+-   [ProcessMiner/nlcor](https://github.com/ProcessMiner/nlcor) package
+    (non-linear correlation): <https://github.com/ProcessMiner/nlcor>
     -   nlcor uses Pearson correlation whereas piececor defaults to use
         Spearman, with the option of overriding this with `cor_function`
         argument
     -   nlcor uses adaptive local linear correlation computations to
         determine cut-points whereas piececor uses the local maxima /
         minima of a smoother.
-    -   The similar package
-        [nlcor](https://github.com/ProcessMiner/nlcor) just takes the
-        mean (of the absolute values of the correlations) to get an
-        *adjusted total correlation* and does
-        $1 - \\prod\_{n = 1}^{i}(1 - p\_n)$ (i.e. `1 - prod(1 - p)`)
-        (throwing out non-significant p-values first) to get an
-        *adjusted total p value*. See `nlcor:::NetCor()`
-        [here](https://github.com/ProcessMiner/nlcor/blob/master/R/correlations.R).
-        For the piececor examples I used Fisher’s transformation and the
-        Z-score method respectively to improve the appropriateness of
-        these statistics.
+    -   nlcor does not apply any transformations when calculating ‘total
+        adjusted’ correlations and associated p-values[11].
 -   Covariant Derivatives
     <https://en.wikipedia.org/wiki/Covariant_derivative>
 -   “Efficient test for nonlinear dependence of two continuous
@@ -455,3 +446,6 @@ along with various other steps.
 the measures would be the same.
 
 [10] And not properly cited
+
+[11] See [github
+comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054).
