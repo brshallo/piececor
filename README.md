@@ -261,8 +261,8 @@ piecewise_cors(
 You aren’t prevented from passing into `cor_function` character strings
 of lambda functions to calculate metrics other than correlations[6].
 
-For example, say we want to see the p.value’s of correlations at each
-segment for `hp ~ qsec`:
+For example, say we want to see the p.value’s of Pearson correlations[7]
+at each segment for `hp ~ qsec`:
 
 ``` r
 # Warnings silenced in chunk output
@@ -271,7 +271,7 @@ mods_cors_pvalues <-
                  .target = hp,
                  mpg, disp, drat, wt, qsec,
 # cor.test() expects x and y vectors not a matrix or dataframe
-                 cor_function = "~cor.test(.x[[1]], .x[[2]], method = 'spearman')$p.value"
+                 cor_function = "~cor.test(.x[[1]], .x[[2]], method = 'pearson')$p.value"
   )
 
 # let's check for qsec
@@ -279,15 +279,26 @@ mods_cors_pvalues$cors$qsec
 #> # A tibble: 4 x 5
 #>     gtoe    lt data              n_obs     cor
 #>    <dbl> <dbl> <list>            <int>   <dbl>
-#> 1 -Inf    16.7 <tibble [6 x 2]>      6 0.0361 
-#> 2   16.7  17.6 <tibble [10 x 2]>    10 0.00250
-#> 3   17.6  19.4 <tibble [9 x 2]>      9 0.0265 
-#> 4   19.4 Inf   <tibble [7 x 2]>      7 1
+#> 1 -Inf    16.7 <tibble [6 x 2]>      6 0.0394 
+#> 2   16.7  17.6 <tibble [10 x 2]>    10 0.0156 
+#> 3   17.6  19.4 <tibble [9 x 2]>      9 0.00489
+#> 4   19.4 Inf   <tibble [7 x 2]>      7 0.660
 ```
 
 The `cor` column here actually represents the statistical test (run
-separately on each segment) of the null hypothesis that the spearman
-correlation coefficient is 0.
+separately on each segment) of the null hypothesis that the correlation
+coefficient is 0.
+
+We could use Stouffer’s [Z-score
+method](https://en.wikipedia.org/wiki/Fisher%27s_method#Relation_to_Stouffer's_Z-score_method)
+to combine these into an overall p-value:
+
+``` r
+# combine_test() is (mostly) copied from {survcomp} package
+mods_cors_pvalues$cors$qsec %>% 
+  with(piececor:::combine_test(cor, n_obs, method = "z.transform"))
+#> [1] 0.0006511026
+```
 
 # Installation
 
@@ -300,7 +311,7 @@ devtools::install_github("brshallo/piececor")
 # Limitations & Notes
 
 -   Very slow compared to other common “simple filtering” methods for
-    predictive modeling[7].
+    predictive modeling[8].
 -   Trying on a few different datasets, it often does not pass the “eye
     test”.
     -   Splits often come near flatter parts of the data or at the tails
@@ -310,25 +321,21 @@ devtools::install_github("brshallo/piececor")
     -   Splits are determined based on optimizing a fit to a {*target*}
         – therefore flipping *{target} \~ {variable of interest}* to
         *{variable of interest} \~ {target}* produces different weighted
-        correlation scores[8]. A smoother that was fit based on total
+        correlation scores[9]. A smoother that was fit based on total
         least squares or minimizing orthogonal distance or some other
         approach may be more appropriate.
-    -   How to do weighted correlation metrics also generally should be
-        given a bit more thought.
-    -   Note that the similar package
-        [nlcor](https://github.com/ProcessMiner/nlcor) just takes the
-        mean of the absolute value of the correlations to get an
-        adjusted total correlation and they do
-        $1 - \\prod\_{n = 1}^{i}(1 - p\_n)$ to get adjusted p values of
-        the correlations. See `nlcor:::NetCor()`
-        [here](https://github.com/ProcessMiner/nlcor/blob/master/R/correlations.R).
--   Other resources on “simple filtering” techniques (e.g. from [Feature
-    Engineering and
-    Selection…](http://www.feat.engineering/greedy-simple-filters.html))
-    recommend converting scores of feature importance to some
-    standardized metric, e.g. a p-value. It would take more
-    consideration for how one could do this type of calculation for
-    piecewise correlations.
+-   How to do weighted correlation metrics and associated p-values
+    generally should be given a bit more thought.
+    -   Other resources on “simple filtering” techniques (e.g. from
+        [Feature Engineering and
+        Selection…](http://www.feat.engineering/greedy-simple-filters.html))
+        recommend converting scores of feature importance to some
+        standardized metric, e.g. a p-value.
+
+### 
+
+-   ### 
+
 -   There is extensive literature in predictive modeling on identifying
     *knots*. The experiment with this package is to take advantage of
     existing software that uses knots or other smoothing techniques and
@@ -344,19 +351,22 @@ devtools::install_github("brshallo/piececor")
         want to have some level of tolerance or requisite change in
         slope or observations in segment, etc. so that minor bumps don’t
         create multiple segments.
+
 -   `custom_model_spec` allows a parsnip model specification, with the
     idea that this would facilitate the input of any kind of smoother
     supported by parsnip (e.g. MARS, polynomial regression, …). However
     actually implementing this would require the removal of the
     dependency on [gratia](https://gavinsimpson.github.io/gratia/) as
     well as multiple other changes to piececor.
+
 -   More thought should go into the structure of the output of
     `piecewise_cor()`
+
 -   (Almost) no checks, tests, catches, etc. have been set-up
 
 # Resources
 
-Links are copied from slack discussions[9] and may be only tangentially
+Links are copied from slack discussions[10] and may be only tangentially
 related to piececor package.
 
 -   “Variable Importance Analysis: A Comprehensive review”
@@ -378,6 +388,23 @@ related to piececor package.
     -   <https://stackoverflow.com/questions/14207250/determining-derivatives-from-gam-smooth-object>
 -   `ProcessMiner/nlcor` package (non-linear correlation):
     <https://github.com/ProcessMiner/nlcor>
+    -   nlcor uses Pearson correlation whereas piececor defaults to use
+        Spearman, with the option of overriding this with `cor_function`
+        argument
+    -   nlcor uses adaptive local linear correlation computations to
+        determine cut-points whereas piececor uses the local maxima /
+        minima of a smoother.
+    -   The similar package
+        [nlcor](https://github.com/ProcessMiner/nlcor) just takes the
+        mean (of the absolute values of the correlations) to get an
+        *adjusted total correlation* and does
+        $1 - \\prod\_{n = 1}^{i}(1 - p\_n)$ (i.e. `1 - prod(1 - p)`)
+        (throwing out non-significant p-values first) to get an
+        *adjusted total p value*. See `nlcor:::NetCor()`
+        [here](https://github.com/ProcessMiner/nlcor/blob/master/R/correlations.R).
+        For the piececor examples I used Fisher’s transformation and the
+        Z-score method respectively to improve the appropriateness of
+        these statistics.
 -   Covariant Derivatives
     <https://en.wikipedia.org/wiki/Covariant_derivative>
 -   “Efficient test for nonlinear dependence of two continuous
@@ -412,10 +439,14 @@ interface).
 [6] Provided the lambda function evaluates to a numeric vector of length
 1
 
-[7] Given that for each *variable of interest* an `mgcv` model is fit –
+[7] Used Pearson rather than Spearman in this example because Spearman
+can more easily get odd cases where end-up with p-values of 1, which
+happens in this case, and break common methods for combining p-values
+
+[8] Given that for each *variable of interest* an `mgcv` model is fit –
 along with various other steps.
 
-[8] Correlation measures usually don’t have some notion of a target, so
+[9] Correlation measures usually don’t have some notion of a target, so
 the measures would be the same.
 
-[9] And not properly cited
+[10] And not properly cited

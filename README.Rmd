@@ -163,7 +163,7 @@ piecewise_cors(
 
 You aren't prevented from passing into `cor_function` character strings of lambda functions to calculate metrics other than correlations^[Provided the lambda function evaluates to a numeric vector of length 1]. 
 
-For example, say we want to see the p.value's of correlations at each segment for `hp ~ qsec`:
+For example, say we want to see the p.value's of Pearson correlations^[Used Pearson rather than Spearman in this example because Spearman can more easily get odd cases where end-up with p-values of 1, which happens in this case, and break common methods for combining p-values] at each segment for `hp ~ qsec`:
 
 ```{r, warning=FALSE}
 # Warnings silenced in chunk output
@@ -172,14 +172,22 @@ mods_cors_pvalues <-
                  .target = hp,
                  mpg, disp, drat, wt, qsec,
 # cor.test() expects x and y vectors not a matrix or dataframe
-                 cor_function = "~cor.test(.x[[1]], .x[[2]], method = 'spearman')$p.value"
+                 cor_function = "~cor.test(.x[[1]], .x[[2]], method = 'pearson')$p.value"
   )
 
 # let's check for qsec
 mods_cors_pvalues$cors$qsec
 ```
 
-The `cor` column here actually represents the statistical test (run separately on each segment) of the null hypothesis that the spearman correlation coefficient is 0.
+The `cor` column here actually represents the statistical test (run separately on each segment) of the null hypothesis that the correlation coefficient is 0.
+
+We could use Stouffer's [Z-score method](https://en.wikipedia.org/wiki/Fisher%27s_method#Relation_to_Stouffer's_Z-score_method) to combine these into an overall p-value:
+
+```{r}
+# combine_test() is (mostly) copied from {survcomp} package
+mods_cors_pvalues$cors$qsec %>% 
+  with(piececor:::combine_test(cor, n_obs, method = "z.transform"))
+```
 
 # Installation
 
@@ -196,9 +204,14 @@ devtools::install_github("brshallo/piececor")
     * Splits often come near flatter parts of the data or at the tails of the distribution where there are fewer points
 * Output of `weighted_abs_mean_cors()` is not particularly meaningful in a traditional notion of "correlation."
     * Splits are determined based on optimizing a fit to a {*target*} -- therefore flipping *{target} ~ {variable of interest}* to *{variable of interest} ~ {target}* produces different weighted correlation scores^[Correlation measures usually don't have some notion of a target, so the measures would be the same.]. A smoother that was fit based on total least squares or minimizing orthogonal distance or some other approach may be more appropriate.
-    * How to do weighted correlation metrics also generally should be given a bit more thought.
-    * Note that the similar package [nlcor](https://github.com/ProcessMiner/nlcor) just takes the mean of the absolute value of the correlations to get an adjusted total correlation and they do $1 - \prod_{n = 1}^{i}(1 - p_n)$ to get adjusted p values of the correlations. See `nlcor:::NetCor()` [here](https://github.com/ProcessMiner/nlcor/blob/master/R/correlations.R).
-* Other resources on "simple filtering" techniques (e.g. from [Feature Engineering and Selection...](http://www.feat.engineering/greedy-simple-filters.html)) recommend converting scores of feature importance to some standardized metric, e.g. a p-value. It would take more consideration for how one could do this type of calculation for piecewise correlations.
+* How to do weighted correlation metrics and associated p-values generally should be given a bit more thought.
+    * Other resources on "simple filtering" techniques (e.g. from [Feature Engineering and Selection...](http://www.feat.engineering/greedy-simple-filters.html)) recommend converting scores of feature importance to some standardized metric, e.g. a p-value.    
+
+###
+
+* 
+###
+
 * There is extensive literature in predictive modeling on identifying *knots*. The experiment with this package is to take advantage of existing software that uses knots or other smoothing techniques and then instead to consider the local minima / maxima created by those techniques to inform cut-points. The defaults of "mgcv" hopes to prevent overfitting and the use of "Spearman's" correlation means we're checking whether the relationship is monotonic. 
     * However we haven't done a ton of research on relevant literature concerning knots and other methods for determining cut-points.
     * Right now the cut-points are essentially determined by looking where in the smoothed fits the first derivative == 0. We may want to consider critical points or other methods. We may also want to have some level of tolerance or requisite change in slope or observations in segment, etc. so that minor bumps don't create multiple segments.
@@ -221,6 +234,9 @@ forests for high-dimensional data" https://core.ac.uk/download/pdf/216462194.pdf
     * https://gavinsimpson.github.io/gratia/reference/fderiv.html 
     * https://stackoverflow.com/questions/14207250/determining-derivatives-from-gam-smooth-object 
 * `ProcessMiner/nlcor` package (non-linear correlation): https://github.com/ProcessMiner/nlcor
+    * nlcor uses Pearson correlation whereas piececor defaults to use Spearman, with the option of overriding this with `cor_function` argument
+    * nlcor uses adaptive local linear correlation computations to determine cut-points whereas piececor uses the local maxima / minima of a smoother. 
+    * The similar package [nlcor](https://github.com/ProcessMiner/nlcor) just takes the mean (of the absolute values of the correlations) to get an *adjusted total correlation* and does $1 - \prod_{n = 1}^{i}(1 - p_n)$ (i.e. `1 - prod(1 - p)`) (throwing out non-significant p-values first) to get an *adjusted total p value*. See `nlcor:::NetCor()` [here](https://github.com/ProcessMiner/nlcor/blob/master/R/correlations.R). For the piececor examples I used Fisher's transformation and the Z-score method respectively to improve the appropriateness of these statistics.
 * Covariant Derivatives https://en.wikipedia.org/wiki/Covariant_derivative
 * "Efficient test for nonlinear dependence of two continuous variables" https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-015-0697-7
 * 11.2 Simple Filters, from Feature Engineering and Selection... http://www.feat.engineering/greedy-simple-filters.html
