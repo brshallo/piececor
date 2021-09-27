@@ -3,7 +3,7 @@ title: "piececor"
 output: 
   github_document:
     includes:
-      in_header: https://img.shields.io/badge/lifecycle-experimental-orange.svg
+      in_header: header.md
     toc: true
 ---
 
