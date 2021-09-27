@@ -1,5 +1,7 @@
 ---
-output: github_document
+output: 
+  github_document:
+    toc: true
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -113,9 +115,9 @@ By default a Fisher z-transformation is applied to the individual correlations w
 
 # Customizing
 
-Arguments `custom_model_spec` and `fit_formula` can be used to customize the smoother. `cor_function` allows for changes in the metric calculated on the segments. See `?piecewise_cors` for more detail on these arguments.
+Arguments `custom_model_spec` and `fit_formula` can be used to customize the [Smoother fit]. `cor_function` allows for changes in the [Correlation metric] calculated on the segments. See `?piecewise_cors` for more detail on these arguments.
 
-## `custom_model_spec`, `fit_formula`
+## Smoother fit
 
 `custom_model_spec` can take in a parsnip model specifications^[Again only generative additive models via the "mgcv" engine may be specified. This is in large part due to a dependency on the deprecated `fderiv()` function in [gratia](https://gavinsimpson.github.io/gratia/). Though changes would also need to be made to the `fit_formula` argument in `piececor::piecewise_cors()` to accommodate this. Other non-linear, continuous models would be possible candidates, e.g. loess or multi-adaptive regression splines (which also already has a parsnip interface).]. For example, setting `sp` (smoothing parameter) to `sp = 2` gives a smoother fit to `hp ~ qsec` that no longer segments the observations:
 
@@ -148,7 +150,7 @@ piecewise_cors(
 
 See [Generalized additive models via mgcv](https://parsnip.tidymodels.org/reference/details_gen_additive_mod_mgcv.html) and associated reference pages for more details on parsnip interfaces.
 
-## `cor_function`
+## Correlation metric
 
 Say you want to measure Pearson's rather than Spearman's correlation coefficient on segments, you could use the `cor_function` argument to change the lambda function:
 ```{r}
@@ -206,12 +208,6 @@ devtools::install_github("brshallo/piececor")
     * Splits are determined based on optimizing a fit to a {*target*} -- therefore flipping *{target} ~ {variable of interest}* to *{variable of interest} ~ {target}* produces different weighted correlation scores^[Correlation measures usually don't have some notion of a target, so the measures would be the same.]. A smoother that was fit based on total least squares or minimizing orthogonal distance or some other approach may be more appropriate.
 * How to do weighted correlation metrics and associated p-values generally should be given a bit more thought.
     * Other resources on "simple filtering" techniques (e.g. from [Feature Engineering and Selection...](http://www.feat.engineering/greedy-simple-filters.html)) recommend converting scores of feature importance to some standardized metric, e.g. a p-value.    
-
-###
-
-* 
-###
-
 * There is extensive literature in predictive modeling on identifying *knots*. The experiment with this package is to take advantage of existing software that uses knots or other smoothing techniques and then instead to consider the local minima / maxima created by those techniques to inform cut-points. The defaults of "mgcv" hopes to prevent overfitting and the use of "Spearman's" correlation means we're checking whether the relationship is monotonic. 
     * However we haven't done a ton of research on relevant literature concerning knots and other methods for determining cut-points.
     * Right now the cut-points are essentially determined by looking where in the smoothed fits the first derivative == 0. We may want to consider critical points or other methods. We may also want to have some level of tolerance or requisite change in slope or observations in segment, etc. so that minor bumps don't create multiple segments.

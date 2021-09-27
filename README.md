@@ -1,4 +1,17 @@
 
+-   [piececor](#piececor)
+-   [Steps](#steps)
+-   [Example](#example)
+    -   [Calculate Correlations](#calculate-correlations)
+    -   [Plots of splits](#plots-of-splits)
+    -   [Weighted correlation](#weighted-correlation)
+-   [Customizing](#customizing)
+    -   [Smoother fit](#smoother-fit)
+    -   [Correlation metric](#correlation-metric)
+-   [Installation](#installation)
+-   [Limitations & Notes](#limitations--notes)
+-   [Resources](#resources)
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # piececor
@@ -188,11 +201,11 @@ correlations when calculating the weighted correlation. See
 # Customizing
 
 Arguments `custom_model_spec` and `fit_formula` can be used to customize
-the smoother. `cor_function` allows for changes in the metric calculated
-on the segments. See `?piecewise_cors` for more detail on these
-arguments.
+the [Smoother fit](#smoother-fit). `cor_function` allows for changes in
+the [Correlation metric](#correlation-metric) calculated on the
+segments. See `?piecewise_cors` for more detail on these arguments.
 
-## `custom_model_spec`, `fit_formula`
+## Smoother fit
 
 `custom_model_spec` can take in a parsnip model specifications[5]. For
 example, setting `sp` (smoothing parameter) to `sp = 2` gives a smoother
@@ -234,7 +247,7 @@ See [Generalized additive models via
 mgcv](https://parsnip.tidymodels.org/reference/details_gen_additive_mod_mgcv.html)
 and associated reference pages for more details on parsnip interfaces.
 
-## `cor_function`
+## Correlation metric
 
 Say you want to measure Pearson’s rather than Spearman’s correlation
 coefficient on segments, you could use the `cor_function` argument to
@@ -330,12 +343,7 @@ devtools::install_github("brshallo/piececor")
         [Feature Engineering and
         Selection…](http://www.feat.engineering/greedy-simple-filters.html))
         recommend converting scores of feature importance to some
-        standardized metric, e.g. a p-value.
-
-### 
-
--   ### 
-
+        standardized metric, e.g. a p-value.  
 -   There is extensive literature in predictive modeling on identifying
     *knots*. The experiment with this package is to take advantage of
     existing software that uses knots or other smoothing techniques and
@@ -351,17 +359,14 @@ devtools::install_github("brshallo/piececor")
         want to have some level of tolerance or requisite change in
         slope or observations in segment, etc. so that minor bumps don’t
         create multiple segments.
-
 -   `custom_model_spec` allows a parsnip model specification, with the
     idea that this would facilitate the input of any kind of smoother
     supported by parsnip (e.g. MARS, polynomial regression, …). However
     actually implementing this would require the removal of the
     dependency on [gratia](https://gavinsimpson.github.io/gratia/) as
     well as multiple other changes to piececor.
-
 -   More thought should go into the structure of the output of
     `piecewise_cor()`
-
 -   (Almost) no checks, tests, catches, etc. have been set-up
 
 # Resources
