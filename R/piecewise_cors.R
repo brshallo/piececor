@@ -1,8 +1,3 @@
-# import dplyr
-#' @importFrom purrr map_dbl map_int map map2
-#' @importFrom ggplot2 aes
-
-
 fit_mod <- function(data,
                     model_spec,
                     fit_formula){

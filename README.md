@@ -271,10 +271,10 @@ piecewise_cors(
 #> 5 qsec  0.718
 ```
 
-You aren’t prevented from passing into `cor_function` character strings
-of lambda functions to calculate metrics other than correlations[6].
+You aren’t prevented from passing into `cor_function` lambda
+functions[6] to calculate metrics/statistics other than correlations[7].
 
-For example, say we want to see the p.value’s of Pearson correlations[7]
+For example, say we want to see the p.value’s of Pearson correlations[8]
 at each segment for `hp ~ qsec`:
 
 ``` r
@@ -324,7 +324,7 @@ devtools::install_github("brshallo/piececor")
 # Limitations & Notes
 
 -   Very slow compared to other common “simple filtering” methods for
-    predictive modeling[8].
+    predictive modeling[9].
 -   Trying on a few different datasets, it often does not pass the “eye
     test”.
     -   Splits often come near flatter parts of the data or at the tails
@@ -334,7 +334,7 @@ devtools::install_github("brshallo/piececor")
     -   Splits are determined based on optimizing a fit to a {*target*}
         – therefore flipping *{target} \~ {variable of interest}* to
         *{variable of interest} \~ {target}* produces different weighted
-        correlation scores[9]. A smoother that was fit based on total
+        correlation scores[10]. A smoother that was fit based on total
         least squares or minimizing orthogonal distance or some other
         approach may be more appropriate.
 -   How to do weighted correlation metrics and associated p-values
@@ -366,12 +366,12 @@ devtools::install_github("brshallo/piececor")
     dependency on [gratia](https://gavinsimpson.github.io/gratia/) as
     well as multiple other changes to piececor.
 -   More thought should go into the structure of the output of
-    `piecewise_cor()`
+    `piecewise_cors()`
 -   (Almost) no checks, tests, catches, etc. have been set-up
 
 # Resources
 
-Links are copied from slack discussions[10] and may be only tangentially
+Links are copied from slack discussions[11] and may be only tangentially
 related to piececor package.
 
 -   “Variable Importance Analysis: A Comprehensive review”
@@ -398,9 +398,12 @@ related to piececor package.
         argument
     -   nlcor uses adaptive local linear correlation computations to
         determine cut-points whereas piececor uses the local maxima /
-        minima of a smoother.
-    -   nlcor does not apply any transformations when calculating ‘total
-        adjusted’ correlations and associated p-values[11].
+        minima of a smoother defined by a {`parsnip`} model
+        specification.
+    -   nlcor currently does not apply any transformations when
+        calculating ‘total adjusted’ correlations and associated
+        p-values (see [github
+        comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054).
 -   Covariant Derivatives
     <https://en.wikipedia.org/wiki/Covariant_derivative>
 -   “Efficient test for nonlinear dependence of two continuous
@@ -432,20 +435,20 @@ continuous models would be possible candidates, e.g. loess or
 multi-adaptive regression splines (which also already has a parsnip
 interface).
 
-[6] Provided the lambda function evaluates to a numeric vector of length
+[6] \*Character strings of tidyverse shortcut syntax for lambda
+functions.
+
+[7] Provided the lambda function evaluates to a numeric vector of length
 1
 
-[7] Used Pearson rather than Spearman in this example because Spearman
+[8] Used Pearson rather than Spearman in this example because Spearman
 can more easily get odd cases where end-up with p-values of 1, which
 happens in this case, and break common methods for combining p-values
 
-[8] Given that for each *variable of interest* an `mgcv` model is fit –
+[9] Given that for each *variable of interest* an `mgcv` model is fit –
 along with various other steps.
 
-[9] Correlation measures usually don’t have some notion of a target, so
+[10] Correlation measures usually don’t have some notion of a target, so
 the measures would be the same.
 
-[10] And not properly cited
-
-[11] See [github
-comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054).
+[11] And not properly cited

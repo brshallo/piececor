@@ -165,7 +165,7 @@ piecewise_cors(
   weighted_abs_mean_cors()
 ```
 
-You aren't prevented from passing into `cor_function` character strings of lambda functions to calculate metrics other than correlations^[Provided the lambda function evaluates to a numeric vector of length 1]. 
+You aren't prevented from passing into `cor_function` lambda functions^[*Character strings of tidyverse shortcut syntax for lambda functions.] to calculate metrics/statistics other than correlations^[Provided the lambda function evaluates to a numeric vector of length 1]. 
 
 For example, say we want to see the p.value's of Pearson correlations^[Used Pearson rather than Spearman in this example because Spearman can more easily get odd cases where end-up with p-values of 1, which happens in this case, and break common methods for combining p-values] at each segment for `hp ~ qsec`:
 
@@ -214,7 +214,7 @@ devtools::install_github("brshallo/piececor")
     * However we haven't done a ton of research on relevant literature concerning knots and other methods for determining cut-points.
     * Right now the cut-points are essentially determined by looking where in the smoothed fits the first derivative == 0. We may want to consider critical points or other methods. We may also want to have some level of tolerance or requisite change in slope or observations in segment, etc. so that minor bumps don't create multiple segments.
 * `custom_model_spec` allows a parsnip model specification, with the idea that this would facilitate the input of any kind of smoother supported by parsnip (e.g. MARS, polynomial regression, ...). However actually implementing this would require the removal of the dependency on [gratia](https://gavinsimpson.github.io/gratia/) as well as multiple other changes to piececor.
-* More thought should go into the structure of the output of `piecewise_cor()`
+* More thought should go into the structure of the output of `piecewise_cors()`
 * (Almost) no checks, tests, catches, etc. have been set-up
 
 # Resources
@@ -233,8 +233,8 @@ forests for high-dimensional data" https://core.ac.uk/download/pdf/216462194.pdf
     * https://stackoverflow.com/questions/14207250/determining-derivatives-from-gam-smooth-object 
 * [ProcessMiner/nlcor](https://github.com/ProcessMiner/nlcor) package (non-linear correlation): https://github.com/ProcessMiner/nlcor
     * nlcor uses Pearson correlation whereas piececor defaults to use Spearman, with the option of overriding this with `cor_function` argument
-    * nlcor uses adaptive local linear correlation computations to determine cut-points whereas piececor uses the local maxima / minima of a smoother. 
-    * nlcor does not apply any transformations when calculating 'total adjusted' correlations and associated p-values^[See [github comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054).]. 
+    * nlcor uses adaptive local linear correlation computations to determine cut-points whereas piececor uses the local maxima / minima of a smoother defined by a {`parsnip`} model specification. 
+    * nlcor currently does not apply any transformations when calculating 'total adjusted' correlations and associated p-values (see [github comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054). 
 * Covariant Derivatives https://en.wikipedia.org/wiki/Covariant_derivative
 * "Efficient test for nonlinear dependence of two continuous variables" https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-015-0697-7
 * 11.2 Simple Filters, from Feature Engineering and Selection... http://www.feat.engineering/greedy-simple-filters.html
