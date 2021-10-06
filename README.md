@@ -404,6 +404,10 @@ related to piececor package.
         calculating ‘total adjusted’ correlations and associated
         p-values (see [github
         comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054).
+-   [ppsr](https://github.com/paulvanderlaken/ppsr) R implementation of
+    predictive power score which outputs a normalized score of how well
+    x predicts y (using a particular model specification and choice of
+    performance metric).
 -   Covariant Derivatives
     <https://en.wikipedia.org/wiki/Covariant_derivative>
 -   “Efficient test for nonlinear dependence of two continuous

@@ -235,6 +235,7 @@ forests for high-dimensional data" https://core.ac.uk/download/pdf/216462194.pdf
     * nlcor uses Pearson correlation whereas piececor defaults to use Spearman, with the option of overriding this with `cor_function` argument
     * nlcor uses adaptive local linear correlation computations to determine cut-points whereas piececor uses the local maxima / minima of a smoother defined by a {`parsnip`} model specification. 
     * nlcor currently does not apply any transformations when calculating 'total adjusted' correlations and associated p-values (see [github comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054). 
+* [ppsr](https://github.com/paulvanderlaken/ppsr) R implementation of predictive power score which outputs a normalized score of how well x predicts y (using a particular model specification and choice of performance metric).
 * Covariant Derivatives https://en.wikipedia.org/wiki/Covariant_derivative
 * "Efficient test for nonlinear dependence of two continuous variables" https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-015-0697-7
 * 11.2 Simple Filters, from Feature Engineering and Selection... http://www.feat.engineering/greedy-simple-filters.html
