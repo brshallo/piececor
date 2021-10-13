@@ -382,18 +382,7 @@ related to piececor package.
     x predicts y (using a particular model specification and choice of
     performance metric) – python package is also available.
 -   [ProcessMiner/nlcor](https://github.com/ProcessMiner/nlcor) package
-    (non-linear correlation): <https://github.com/ProcessMiner/nlcor>
-    -   nlcor uses Pearson correlation whereas piececor defaults to use
-        Spearman, with the option of overriding this with `cor_function`
-        argument
-    -   nlcor uses adaptive local linear correlation computations to
-        determine cut-points whereas piececor uses the local maxima /
-        minima of a smoother defined by a {`parsnip`} model
-        specification.
-    -   nlcor currently does not apply any transformations when
-        calculating ‘total adjusted’ correlations and associated
-        p-values (see [github
-        comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054).
+    (non-linear correlation)[12].
 -   For tidy interface for measures of association also see
     [infer](https://github.com/tidymodels/infer),
     [corrr](https://corrr.tidymodels.org/),
@@ -467,3 +456,13 @@ along with various other steps.
 the measures would be the same.
 
 [11] And not properly cited
+
+[12] -   nlcor uses Pearson correlation whereas piececor defaults to use
+    Spearman, with the option of overriding this with `cor_function`
+    argument
+-   nlcor uses adaptive local linear correlation computations to
+    determine cut-points whereas piececor uses the local maxima / minima
+    of a smoother defined by a {`parsnip`} model specification.
+-   nlcor currently does not apply any transformations when calculating
+    ‘total adjusted’ correlations and associated p-values (see [github
+    comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054).
