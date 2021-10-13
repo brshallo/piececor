@@ -374,6 +374,34 @@ devtools::install_github("brshallo/piececor")
 Links are copied from slack discussions[11] and may be only tangentially
 related to piececor package.
 
+-   [NNS](https://github.com/OVVO-Financial/NNS) Package for Nonlinear
+    nonparametric statistics, related to kernel regression techniques
+    (python package also available).
+-   [ppsr](https://github.com/paulvanderlaken/ppsr) R implementation of
+    predictive power score which outputs a normalized score of how well
+    x predicts y (using a particular model specification and choice of
+    performance metric) – python package is also available.
+-   [ProcessMiner/nlcor](https://github.com/ProcessMiner/nlcor) package
+    (non-linear correlation): <https://github.com/ProcessMiner/nlcor>
+    -   nlcor uses Pearson correlation whereas piececor defaults to use
+        Spearman, with the option of overriding this with `cor_function`
+        argument
+    -   nlcor uses adaptive local linear correlation computations to
+        determine cut-points whereas piececor uses the local maxima /
+        minima of a smoother defined by a {`parsnip`} model
+        specification.
+    -   nlcor currently does not apply any transformations when
+        calculating ‘total adjusted’ correlations and associated
+        p-values (see [github
+        comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054).
+-   For tidy interface for measures of association also see
+    [infer](https://github.com/tidymodels/infer),
+    [corrr](https://corrr.tidymodels.org/),
+    [easystats](https://github.com/easystats/easystats)
+-   Just *slightly* tangential, there are a ton of non-linear projection
+    methods out there, e.g. KPCA, UMAP, ICA, tSNE, and many others… many
+    of these are accessible via recipes or embed packages in tidymodels
+    ecosystem.
 -   “Variable Importance Analysis: A Comprehensive review”
     <https://www.sciencedirect.com/science/article/abs/pii/S0951832015001672>
 -   “Permutation importance: a corrected feature importance measure”
@@ -391,23 +419,6 @@ related to piececor package.
 -   Getting derivitives from GAM’s
     -   <https://gavinsimpson.github.io/gratia/reference/fderiv.html>
     -   <https://stackoverflow.com/questions/14207250/determining-derivatives-from-gam-smooth-object>
--   [ProcessMiner/nlcor](https://github.com/ProcessMiner/nlcor) package
-    (non-linear correlation): <https://github.com/ProcessMiner/nlcor>
-    -   nlcor uses Pearson correlation whereas piececor defaults to use
-        Spearman, with the option of overriding this with `cor_function`
-        argument
-    -   nlcor uses adaptive local linear correlation computations to
-        determine cut-points whereas piececor uses the local maxima /
-        minima of a smoother defined by a {`parsnip`} model
-        specification.
-    -   nlcor currently does not apply any transformations when
-        calculating ‘total adjusted’ correlations and associated
-        p-values (see [github
-        comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054).
--   [ppsr](https://github.com/paulvanderlaken/ppsr) R implementation of
-    predictive power score which outputs a normalized score of how well
-    x predicts y (using a particular model specification and choice of
-    performance metric).
 -   Covariant Derivatives
     <https://en.wikipedia.org/wiki/Covariant_derivative>
 -   “Efficient test for nonlinear dependence of two continuous
