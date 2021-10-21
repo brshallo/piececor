@@ -374,6 +374,11 @@ devtools::install_github("brshallo/piececor")
 Links are copied from slack discussions[11] and may be only tangentially
 related to piececor package.
 
+-   Within the [easystats](https://github.com/easystats) ecosystem is
+    the
+    [correlation](https://easystats.github.io/correlation/articles/types.html)
+    package / function that supports “Distance correlation” that
+    measures both linear and non-linear associations.
 -   [NNS](https://github.com/OVVO-Financial/NNS) Package for Nonlinear
     nonparametric statistics, related to kernel regression techniques
     (python package also available).

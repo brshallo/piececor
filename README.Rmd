@@ -221,6 +221,7 @@ devtools::install_github("brshallo/piececor")
 
 Links are copied from slack discussions^[And not properly cited] and may be only tangentially related to piececor package. 
 
+* Within the [easystats](https://github.com/easystats) ecosystem is the [correlation](https://easystats.github.io/correlation/articles/types.html) package / function that supports "Distance correlation" that measures both linear and non-linear associations.
 * [NNS](https://github.com/OVVO-Financial/NNS) Package for Nonlinear nonparametric statistics, related to kernel regression techniques (python package also available).
 * [ppsr](https://github.com/paulvanderlaken/ppsr) R implementation of predictive power score which outputs a normalized score of how well x predicts y (using a particular model specification and choice of performance metric) -- python package is also available.
 * [ProcessMiner/nlcor](https://github.com/ProcessMiner/nlcor) package (non-linear correlation)[^nlcor].
