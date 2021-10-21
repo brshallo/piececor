@@ -377,8 +377,13 @@ related to piececor package.
 -   Within the [easystats](https://github.com/easystats) ecosystem is
     the
     [correlation](https://easystats.github.io/correlation/articles/types.html)
-    package / function that supports “Distance correlation” that
-    measures both linear and non-linear associations.
+    package / function that supports [Distance
+    correlation](https://en.wikipedia.org/wiki/Distance_correlation)
+    that measures both linear and non-linear associations.
+-   The [infotheo](https://github.com/affeldt-aist/infotheo) package
+    supports measuring the amount of [mutual
+    information](https://en.wikipedia.org/wiki/Mutual_information)
+    between variables.
 -   [NNS](https://github.com/OVVO-Financial/NNS) Package for Nonlinear
     nonparametric statistics, related to kernel regression techniques
     (python package also available).
@@ -388,6 +393,9 @@ related to piececor package.
     performance metric) – python package is also available.
 -   [ProcessMiner/nlcor](https://github.com/ProcessMiner/nlcor) package
     (non-linear correlation)[12].
+-   See
+    [gist](https://gist.github.com/brshallo/6087347f5572feecbb7fa5cbd5e4a8fa)
+    for speed tests on above packages and piececor.
 -   For tidy interface for measures of association also see
     [infer](https://github.com/tidymodels/infer),
     [corrr](https://corrr.tidymodels.org/),

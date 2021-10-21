@@ -221,10 +221,12 @@ devtools::install_github("brshallo/piececor")
 
 Links are copied from slack discussions^[And not properly cited] and may be only tangentially related to piececor package. 
 
-* Within the [easystats](https://github.com/easystats) ecosystem is the [correlation](https://easystats.github.io/correlation/articles/types.html) package / function that supports "Distance correlation" that measures both linear and non-linear associations.
+* Within the [easystats](https://github.com/easystats) ecosystem is the [correlation](https://easystats.github.io/correlation/articles/types.html) package / function that supports [Distance correlation](https://en.wikipedia.org/wiki/Distance_correlation) that measures both linear and non-linear associations.
+* The [infotheo](https://github.com/affeldt-aist/infotheo) package supports measuring the amount of [mutual information](https://en.wikipedia.org/wiki/Mutual_information) between variables.
 * [NNS](https://github.com/OVVO-Financial/NNS) Package for Nonlinear nonparametric statistics, related to kernel regression techniques (python package also available).
 * [ppsr](https://github.com/paulvanderlaken/ppsr) R implementation of predictive power score which outputs a normalized score of how well x predicts y (using a particular model specification and choice of performance metric) -- python package is also available.
 * [ProcessMiner/nlcor](https://github.com/ProcessMiner/nlcor) package (non-linear correlation)[^nlcor].
+* See [gist](https://gist.github.com/brshallo/6087347f5572feecbb7fa5cbd5e4a8fa) for speed tests on above packages and piececor.
 * For tidy interface for measures of association also see [infer](https://github.com/tidymodels/infer),  [corrr](https://corrr.tidymodels.org/), [easystats](https://github.com/easystats/easystats)
 * Just *slightly* tangential, there are a ton of non-linear projection methods out there, e.g. KPCA, UMAP, ICA, tSNE, and many others... many of these are accessible via recipes or embed packages in tidymodels ecosystem.
 * "Variable Importance Analysis: A Comprehensive review" https://www.sciencedirect.com/science/article/abs/pii/S0951832015001672
