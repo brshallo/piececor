@@ -191,9 +191,10 @@ weighted_cors %>%
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
-By default a Fisher z-transformation is applied to the individual
-correlations when calculating the weighted correlation. See
-`?weighted_abs_mean_cors` for more information.
+By default a [Fisher
+transformation](https://en.wikipedia.org/wiki/Fisher_transformation) is
+applied to the individual correlations when calculating the weighted
+correlation. See `?weighted_abs_mean_cors` for more information.
 
 See the end of section [Correlation metric](#correlation-metric) for an
 example calculating a p-value on piecewise correlations.
@@ -329,6 +330,15 @@ devtools::install_github("brshallo/piececor")
     test”.
     -   Splits often come near flatter parts of the data or at the tails
         of the distribution where there are fewer points
+-   {piececor} is intended for when trying to measure non-linear and
+    *non-monotonic* associations. If the relationships are likely
+    monotonic, generally using either Spearman’s or Kendall’s
+    correlation coefficients is a better + faster option.
+-   Changing default correlation method from Spearman’s to Kendall’s
+    probably makes sense (as Kendall’s has better statistical properties
+    – particularly regarding calculating p-values), though I should
+    verify that Fisher’s transformation can also be used with Kendall’s
+    method.
 -   Output of `weighted_abs_mean_cors()` is not particularly meaningful
     in a traditional notion of “correlation.”
     -   Splits are determined based on optimizing a fit to a {*target*}
