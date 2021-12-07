@@ -333,18 +333,18 @@ devtools::install_github("brshallo/piececor")
 -   {piececor} is intended for when trying to measure non-linear and
     *non-monotonic* associations. If the relationships are likely
     monotonic, generally using either Spearman’s or Kendall’s
-    correlation coefficients is a better + faster option.
+    correlation coefficients is a better + faster option[10].
 -   Changing default correlation method from Spearman’s to Kendall’s
     probably makes sense (as Kendall’s has better statistical properties
     – particularly regarding calculating p-values), though I should
     verify that Fisher’s transformation can also be used with Kendall’s
-    method.
+    method[11].
 -   Output of `weighted_abs_mean_cors()` is not particularly meaningful
     in a traditional notion of “correlation.”
     -   Splits are determined based on optimizing a fit to a {*target*}
         – therefore flipping *{target} \~ {variable of interest}* to
         *{variable of interest} \~ {target}* produces different weighted
-        correlation scores[10]. A smoother that was fit based on total
+        correlation scores[12]. A smoother that was fit based on total
         least squares or minimizing orthogonal distance or some other
         approach may be more appropriate.
 -   How to do weighted correlation metrics and associated p-values
@@ -381,7 +381,7 @@ devtools::install_github("brshallo/piececor")
 
 # Resources
 
-Links are copied from slack discussions[11] and may be only tangentially
+Links are copied from slack discussions[13] and may be only tangentially
 related to piececor package.
 
 -   Within the [easystats](https://github.com/easystats) ecosystem is
@@ -402,7 +402,14 @@ related to piececor package.
     x predicts y (using a particular model specification and choice of
     performance metric) – python package is also available.
 -   [ProcessMiner/nlcor](https://github.com/ProcessMiner/nlcor) package
-    (non-linear correlation)[12].
+    (non-linear correlation)[14].
+
+I ran a rough speed test on these methods
+[here](https://gist.github.com/brshallo/6087347f5572feecbb7fa5cbd5e4a8fa):
+
+![speed test of various methods, mutual information is the
+fastest.](https://pbs.twimg.com/media/FCQmvR1UcAA-98I?format=png&name=small)
+
 -   See
     [gist](https://gist.github.com/brshallo/6087347f5572feecbb7fa5cbd5e4a8fa)
     for speed tests on above packages and piececor.
@@ -475,12 +482,19 @@ happens in this case, and break common methods for combining p-values
 [9] Given that for each *variable of interest* an `mgcv` model is fit –
 along with various other steps.
 
-[10] Correlation measures usually don’t have some notion of a target, so
+[10] 
+
+[11] See
+[MoseleyBioinformaticsLab/ICIKendallTau](https://t.co/5BGfmiNgG4?amp=1)
+for a faster implementation of Kendall’s method than offered in the
+`cor(x, method = "kendall")` approach in the base R stats package.
+
+[12] Correlation measures usually don’t have some notion of a target, so
 the measures would be the same.
 
-[11] And not properly cited
+[13] And not properly cited
 
-[12] -   nlcor uses Pearson correlation whereas piececor defaults to use
+[14] -   nlcor uses Pearson correlation whereas piececor defaults to use
     Spearman, with the option of overriding this with `cor_function`
     argument
 -   nlcor uses adaptive local linear correlation computations to
@@ -488,4 +502,4 @@ the measures would be the same.
     of a smoother defined by a {`parsnip`} model specification.
 -   nlcor currently does not apply any transformations when calculating
     ‘total adjusted’ correlations and associated p-values (see [github
-    comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054).
+    comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054)).

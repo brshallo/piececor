@@ -206,8 +206,8 @@ devtools::install_github("brshallo/piececor")
 * Very slow compared to other common "simple filtering" methods for predictive modeling^[Given that for each *variable of interest* an `mgcv` model is fit -- along with various other steps.].
 * Trying on a few different datasets, it often does not pass the "eye test". 
     * Splits often come near flatter parts of the data or at the tails of the distribution where there are fewer points
-* {piececor} is intended for when trying to measure non-linear and *non-monotonic* associations. If the relationships are likely monotonic, generally using either Spearman's or Kendall's correlation coefficients is a better + faster option.
-* Changing default correlation method from Spearman's to Kendall's probably makes sense (as Kendall's has better statistical properties -- particularly regarding calculating p-values), though I should verify that Fisher's transformation can also be used with Kendall's method.
+* {piececor} is intended for when trying to measure non-linear and *non-monotonic* associations. If the relationships are likely monotonic, generally using either Spearman's or Kendall's correlation coefficients is a better + faster option^[].
+* Changing default correlation method from Spearman's to Kendall's probably makes sense (as Kendall's has better statistical properties -- particularly regarding calculating p-values), though I should verify that Fisher's transformation can also be used with Kendall's method^[See [MoseleyBioinformaticsLab/ICIKendallTau](https://t.co/5BGfmiNgG4?amp=1) for a faster implementation of Kendall's method than offered in the `cor(x, method = "kendall")` approach in the base R stats package.].
 * Output of `weighted_abs_mean_cors()` is not particularly meaningful in a traditional notion of "correlation."
     * Splits are determined based on optimizing a fit to a {*target*} -- therefore flipping *{target} ~ {variable of interest}* to *{variable of interest} ~ {target}* produces different weighted correlation scores^[Correlation measures usually don't have some notion of a target, so the measures would be the same.]. A smoother that was fit based on total least squares or minimizing orthogonal distance or some other approach may be more appropriate.
 * How to do weighted correlation metrics and associated p-values generally should be given a bit more thought.
@@ -228,6 +228,11 @@ Links are copied from slack discussions^[And not properly cited] and may be only
 * [NNS](https://github.com/OVVO-Financial/NNS) Package for Nonlinear nonparametric statistics, related to kernel regression techniques (python package also available).
 * [ppsr](https://github.com/paulvanderlaken/ppsr) R implementation of predictive power score which outputs a normalized score of how well x predicts y (using a particular model specification and choice of performance metric) -- python package is also available.
 * [ProcessMiner/nlcor](https://github.com/ProcessMiner/nlcor) package (non-linear correlation)[^nlcor].
+
+I ran a rough speed test on these methods [here](https://gist.github.com/brshallo/6087347f5572feecbb7fa5cbd5e4a8fa):
+
+![speed test of various methods, mutual information is the fastest.](https://pbs.twimg.com/media/FCQmvR1UcAA-98I?format=png&name=small)
+
 * See [gist](https://gist.github.com/brshallo/6087347f5572feecbb7fa5cbd5e4a8fa) for speed tests on above packages and piececor.
 * For tidy interface for measures of association also see [infer](https://github.com/tidymodels/infer),  [corrr](https://corrr.tidymodels.org/), [easystats](https://github.com/easystats/easystats)
 * Just *slightly* tangential, there are a ton of non-linear projection methods out there, e.g. KPCA, UMAP, ICA, tSNE, and many others... many of these are accessible via recipes or embed packages in tidymodels ecosystem.
@@ -252,4 +257,4 @@ forests for high-dimensional data" https://core.ac.uk/download/pdf/216462194.pdf
     
     * nlcor uses Pearson correlation whereas piececor defaults to use Spearman, with the option of overriding this with `cor_function` argument
     * nlcor uses adaptive local linear correlation computations to determine cut-points whereas piececor uses the local maxima / minima of a smoother defined by a {`parsnip`} model specification. 
-    * nlcor currently does not apply any transformations when calculating 'total adjusted' correlations and associated p-values (see [github comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054). 
+    * nlcor currently does not apply any transformations when calculating 'total adjusted' correlations and associated p-values (see [github comment](https://github.com/ProcessMiner/nlcor/issues/15#issuecomment-928320054)). 
